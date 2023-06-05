@@ -47,20 +47,22 @@ function createWaypointTemplate(oneWaypoint) {
 }
 
 export default class WaypointView {
+  #element = null;
+  #oneWaypoint = null;
   constructor({oneWaypoint}) {
-    this.oneWaypoint = oneWaypoint;
+    this.#oneWaypoint = oneWaypoint;
   }
 
-  getTemplate() {
-    return createWaypointTemplate(this.oneWaypoint);
+  get template() {
+    return createWaypointTemplate(this.#oneWaypoint);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
