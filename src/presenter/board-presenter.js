@@ -1,8 +1,8 @@
 import CreationForm from '../view/creation-form';
-import EditForm from '../view/edit-form';
+import EditForm from '../view/editing-form';
 import Sorting from '../view/sorting';
-import WaypointView from '../view/waypoint';
-import WaypointList from '../view/waypoint-list';
+import WaypointView from '../view/point';
+import WaypointList from '../view/point-list';
 import {render} from '../render';
 import {isEsc} from '../utils';
 

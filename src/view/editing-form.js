@@ -136,20 +136,22 @@ function createEditFormTemplate(oneWaypoint) {
 }
 
 export default class EditForm {
-  constructor({oneWaypoint}) {
-    this.oneWaypoint = oneWaypoint;
+  #element = null;
+  #oneWaypoint = null;
+  constructor(oneWaypoint) {
+    this.#oneWaypoint = oneWaypoint;
   }
 
-  getTemplate() {
-    return createEditFormTemplate(this.oneWaypoint);
+  get template() {
+    return createEditFormTemplate(this.#oneWaypoint);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
