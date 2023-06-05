@@ -1,10 +1,10 @@
-import {createElement} from '../render.js';
 import {getDestinationByID} from '../mock/destination';
 import {getDateDayAndMo, getDateWithoutT, getDateWithT, getTime} from '../utils';
 import {getOfferById} from '../mock/offers';
+import AbstractView from '../framework/view/abstract-view';
 
-function createOffersTemplate(offerIds, type){
-  return offerIds.map((offerId)=>{
+function createOffersTemplate(offerIds, type) {
+  return offerIds.map((offerId) => {
     const oneOffer = getOfferById(type, offerId);
     return `<li class="event__offer">
           <span class="event__offer-title">${oneOffer.title}</span>
@@ -15,6 +15,7 @@ function createOffersTemplate(offerIds, type){
 }
 
 function createWaypointTemplate(oneWaypoint) {
+
   const itemDest = getDestinationByID(oneWaypoint.destination);
   return (
     `<li class="trip-events__item">
@@ -46,26 +47,24 @@ function createWaypointTemplate(oneWaypoint) {
   );
 }
 
-export default class WaypointView {
-  #element = null;
+export default class WaypointView extends AbstractView {
   #oneWaypoint = null;
-  constructor({oneWaypoint}) {
+  #handleClick = null;
+
+  constructor({oneWaypoint, onClick}) {
+    super();
     this.#oneWaypoint = oneWaypoint;
+    this.#handleClick = onClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
   get template() {
     return createWaypointTemplate(this.#oneWaypoint);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }
