@@ -1,7 +1,7 @@
 import {getRandomItemFromItems, getRandomPrice, createIDgenerator} from '../utils.js';
 import {variousDates, pointTypes } from './data.js';
 import { destinations, generateDestinations } from './destination.js';
-import {getRandomOffersIdsByType} from './offers.js';
+import {getRandomOffersIdsByType} from './picture.js';
 
 const waypoints = [];
 

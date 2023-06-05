@@ -1,9 +1,12 @@
-import { getRandomPicture, getRandomArrayElement } from '../util';
-import { descriptionPhrases } from './data';
+import {offersByType } from './data';
+import { getRandomSliceFromItems } from '../utils';
 
-const createPictures = () => ({
-  src: getRandomPicture(),
-  description: getRandomArrayElement(descriptionPhrases)
-});
+const getRandomOffersIdsByType = (type) => {
+  const currentTypeOffers = getRandomSliceFromItems(
+    offersByType.find((currentOffers) => currentOffers.type === type).offers);
+  return currentTypeOffers.map((offer) => offer.id);
+};
 
-export {createPictures};
+const getOfferById = (type, offerId)=> offersByType.find((el)=>el.type === type).offers.find((offer)=>offer.id === offerId);
+
+export {getRandomOffersIdsByType, getOfferById};

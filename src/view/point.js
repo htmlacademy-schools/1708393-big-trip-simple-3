@@ -1,6 +1,6 @@
 import {getDestinationByID} from '../mock/destination';
 import {getDateDayAndMo, getDateWithoutT, getDateWithT, getTime} from '../utils';
-import {getOfferById} from '../mock/offers';
+import {getOfferById} from '../mock/picture';
 import AbstractView from '../framework/view/abstract-view';
 
 function createOffersTemplate(offerIds, type) {

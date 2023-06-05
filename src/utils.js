@@ -3,6 +3,10 @@ const EVENT_DATE_FORMAT = 'MMM D';
 const EVENT_TIME_FORMAT = 'H:mm';
 const EVENT_YEARS_FORMAT = 'DD/MM/YY H:mm';
 
+const isTripDateBeforeToday = (date) => dayjs(date).isBefore(dayjs(), 'D') || dayjs(date).isSame(dayjs(), 'D');
+
+const changeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
+
 const getRandomItemFromItems = (items) => items[Math.floor(Math.random() * items.length)];
 
 const isEsc = (evt) => evt.key === 'Escape';
@@ -35,4 +39,4 @@ const getTime = (dateStr) => dayjs(dateStr).format(EVENT_TIME_FORMAT);
 const getDateYears = (date) => dayjs(date).format(EVENT_YEARS_FORMAT);
 
 export {getRandomItemFromItems, getRandomPrice, getRandomSliceFromItems, getRandomId, createIDgenerator, getRandomArrayElement,
-  getDateWithoutT, getDateDayAndMo, getDateWithT, getTime, getItemFromItemsById, getDateYears, isEsc};
+  getDateWithoutT, getDateDayAndMo, getDateWithT, getTime, getItemFromItemsById, getDateYears, isEsc, isTripDateBeforeToday, changeType};
