@@ -1,10 +1,10 @@
 import CreationForm from '../view/creation-form';
-import EditForm from '../view/edit-form';
+import EditForm from '../view/editing-form';
 import Sorting from '../view/sorting';
-import WaypointView from '../view/waypoint';
-import WaypointList from '../view/waypoint-list';
+import WaypointView from '../view/point';
+import WaypointList from '../view/point-list';
 import {isEsc} from '../utils';
-import NoWaypointMessage from '../view/no-waypoints';
+import NoWaypointMessage from '../view/no-point';
 import {render, replace} from '../framework/render';
 
 export default class BoardPresenter {
@@ -12,10 +12,12 @@ export default class BoardPresenter {
   #boardContainer = null;
   #waypointsModel = null;
   #noWaypointMessage = null;
+  #sorters = null;
 
-  constructor({boardContainer, waypointsModel}) {
+  constructor({boardContainer, waypointsModel, sorters}) {
     this.#boardContainer = boardContainer;
     this.#waypointsModel = waypointsModel;
+    this.#sorters = sorters;
   }
 
   init() {
@@ -25,7 +27,7 @@ export default class BoardPresenter {
       render(this.#noWaypointMessage, this.#boardContainer);
     } else {
       this.#waypointListComponent = new WaypointList();
-      render(new Sorting(), this.#boardContainer);
+      render(new Sorting(this.#sorters), this.#boardContainer);
       render(this.#waypointListComponent, this.#boardContainer);
       render(new CreationForm(waypoints[0]), this.#waypointListComponent.element);
 

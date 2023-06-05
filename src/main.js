@@ -1,16 +1,20 @@
 import Filters from './view/filters.js';
-import BoardPresenter from './presenter/board-presenter.js';
+import BoardPresenter from './presenter/board-presenter';
 import ModelWaypoint from './model/model-waypoint';
-import {waypoints, mockInit} from './mock/point';
+import {mockInit, waypoints} from './mock/point';
 import {render} from './framework/render';
+import {generateFilter} from './mock/filter';
+import {generateSorter} from './mock/sort';
 
-const filterConteiner = document.querySelector('.trip-controls__filters');
+const siteHeaderElement = document.querySelector('.trip-controls__filters');
+const container = document.querySelector('.trip-events');
 
-const pageContainer = document.querySelector('.trip-events');
+mockInit(5, 10);
+const filters = generateFilter();
+const sorters = generateSorter();
 
-mockInit(6, 10);
 const modelWaypoints = new ModelWaypoint(waypoints);
-const boardPresenter = new BoardPresenter({boardContainer: pageContainer, waypointsModel: modelWaypoints});
+const boardPresenter = new BoardPresenter({boardContainer: container, waypointsModel: modelWaypoints, sorters});
+render(new Filters(filters), siteHeaderElement);
 
-render(new Filters,filterConteiner);
 boardPresenter.init();
