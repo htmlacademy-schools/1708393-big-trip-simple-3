@@ -104,6 +104,8 @@ const offersByType = [
 
 
 const getOffersByType = (type) => offersByType.find((currentTypeOffers) => currentTypeOffers.type === type).offers;
+const getOfferName = (offerId) => offersByType.find((offer) => offer.id === offerId).title;
+const getOfferPrice = (offerId) => offersByType.find((offer) => offer.id === offerId).price;
 
 const descrText = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -172,4 +174,4 @@ const SortType = {
   OFFERS: 'offers'
 };
 
-export {pointTypes, variousDates, offersByType, getOffersByType, descrText, cities, FilterType, SortType};
+export {pointTypes, variousDates, offersByType, getOffersByType, descrText, cities, FilterType, SortType, getOfferName, getOfferPrice};
