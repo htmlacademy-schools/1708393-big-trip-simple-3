@@ -1,90 +1,56 @@
-import CreationForm from '../view/creation-form';
-import Sorting from '../view/sorting';
-import WaypointList from '../view/point-list';
-import NoWaypointMessage from '../view/no-point';
 import {render, RenderPosition} from '../framework/render';
-import WaypointPresenter from './waypoint-presenter';
+import WaypointPresenter from './point-presenter';
+import CreationForm from '../view/creation-form';
+import NoWaypointMessage from '../view/no-point';
+import WaypointList from '../view/point-list';
+import Sorting from '../view/sorting';
 import {SortType} from '../mock/data';
-import {sorts} from '../mock/sort';
+import { sortByDay, sortByPrice, updateItem } from '../mock/sort';
 
 export default class BoardPresenter {
-  #waypointListComponent = new WaypointList();
-  #noWaypointMessage = new NoWaypointMessage();
-  #sortComponent = new Sorting();
-  #waypointPresenter = new Map();
-  #currentSortType = SortType.DAY;
-  #sourcedWaypoints = [];
-
+  #pointsListComponent = new WaypointList();
   #boardContainer = null;
-  #waypointsModel = null;
-  #waypoints = null;
+  #points = null;
+  #pointsModel = null;
+  #creationFormComponent = null;
+  #noPointComponent = null;
+  #sortComponent = null;
+  #pointPresenter = new Map();
+  #currentSortType = SortType.DAY;
+  #sourcedPoints = [];
 
-  constructor({boardContainer, waypointsModel}) {
+  constructor ({boardContainer, pointsModel}) {
     this.#boardContainer = boardContainer;
-    this.#waypointsModel = waypointsModel;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.#waypoints = [...this.#waypointsModel.arrWaypoints];
+    this.#points = [...this.#pointsModel.points];
+    this.#sourcedPoints = [...this.#pointsModel.points];
     this.#renderBoard();
-    this.#sourcedWaypoints = [...this.#waypointsModel.arrWaypoints];
-  }
-
-  #renderSort() {
-    render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
-    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
-  }
-
-  #renderNoWaypoint() {
-    render(this.#noWaypointMessage, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
   #handleModeChange = () => {
-    this.#waypointPresenter.forEach((presenter) => presenter.resetView());
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #renderWaypoint(waypoint) {
-    const waypointPresenter = new WaypointPresenter({
-      waypointList: this.#waypointListComponent.element,
-      onModeChange: this.#handleModeChange
-    });
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
 
-    waypointPresenter.init(waypoint);
-    this.#waypointPresenter.set(waypoint.id, waypointPresenter);
-  }
-
-  #renderWaypoints() {
-    this.#waypoints.forEach((waypoint) => this.#renderWaypoint(waypoint));
-  }
-
-  #renderWaypointsList() {
-    render(this.#waypointListComponent, this.#boardContainer);
-    this.#renderWaypoints();
-  }
-
-  #renderBoard() {
-    if (this.#waypoints.length === 0) {
-      render(this.#renderNoWaypoint, this.#boardContainer);
-      return;
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case 'sort-day':
+        this.#points.sort(sortByDay);
+        break;
+      case 'sort-price':
+        this.#points.sort(sortByPrice);
+        break;
+      default:
+        this.#points = [...this.#sourcedPoints];
     }
-    this.#renderSort();
 
-    render(new CreationForm(this.#waypoints[0]), this.#waypointListComponent.element);
-    this.#renderWaypointsList();
-  }
-
-  #clearWaypointList() {
-    this.#waypointPresenter.forEach((presenter) => presenter.destroy());
-    this.#waypointPresenter.clear();
-    //remove(this.#sortComponent); в демо есть, по факту не ок
-  }
-
-  #sortWaypoints(sortType) {
-    if (sorts[sortType]) {
-      this.#waypoints.sort(sorts[sortType]);
-    } else {
-      this.#waypoints = [...this.#sourcedWaypoints];
-    }
     this.#currentSortType = sortType;
   }
 
@@ -92,8 +58,61 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#sortWaypoints(sortType);
-    this.#clearWaypointList();
-    this.#renderWaypointsList();
+    this.#sortPoints(sortType);
+    this.#clearPointsList();
+    this.#renderPointsList();
   };
+
+  #renderSort() {
+    this.#sortComponent = new Sorting({
+      onSortTypeChange: this.#handleSortTypeChange,
+      currentSortType: this.#currentSortType
+    });
+    this.#sortPoints('sort-day');
+    render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderBoard() {
+    if (this.#points.length === 0) {
+      this.#renderNoPoints();
+      return;
+    }
+    this.#renderSort();
+    this.#renderPointsList();
+  }
+
+  #renderNoPoints() {
+    this.#noPointComponent = new NoWaypointMessage();
+    render(this.#noPointComponent, this.#boardContainer, RenderPosition.AFTERBEGIN );
+  }
+
+  #renderPointsList() {
+    render(this.#pointsListComponent, this.#boardContainer);
+    this.#renderPoints();
+  }
+
+  #renderPoint(point) {
+    const pointPresenter = new WaypointPresenter({
+      pointListContainer: this.#pointsListComponent.element,
+      onModeChange: this.#handleModeChange,
+      onDataChange: this.#handlePointChange
+    });
+
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
+  }
+
+  #renderPoints() {
+    this.#points.forEach((point) => this.#renderPoint(point));
+  }
+
+  #renderCreationForm() {
+    this.#creationFormComponent = new CreationForm(this.#points[0]);
+    render(this.#creationFormComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #clearPointsList() {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+  }
 }

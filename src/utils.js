@@ -4,6 +4,10 @@ const EVENT_DATE_FORMAT = 'MMM D';
 const EVENT_TIME_FORMAT = 'H:mm';
 const EVENT_YEARS_FORMAT = 'DD/MM/YY HH:mm';
 
+const updateWaypoint = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+const makeFirstLetterUpperCase = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
 const isTripDateBeforeToday = (date) => dayjs(date).isBefore(dayjs(), 'D') || dayjs(date).isSame(dayjs(), 'D');
 
 const changeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
@@ -53,4 +57,4 @@ const getTime = (dateStr) => dayjs(dateStr).format(EVENT_TIME_FORMAT);
 const getDateYears = (date) => dayjs(date).format(EVENT_YEARS_FORMAT);
 
 export {getRandomItemFromItems, getRandomPrice, getRandomSliceFromItems, getRandomId, createIDgenerator, getRandomArrayElement,
-  getDateWithoutT, getDateDayAndMo, getDateWithT, getTime, getItemFromItemsById, getDateYears, isEsc, isTripDateBeforeToday, changeType, createOffersTemplate};
+  getDateWithoutT, getDateDayAndMo, getDateWithT, getTime, getItemFromItemsById, getDateYears, isEsc, isTripDateBeforeToday, changeType, createOffersTemplate, updateWaypoint, makeFirstLetterUpperCase};

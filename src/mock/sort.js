@@ -12,4 +12,14 @@ const sorts = {
 const offOptions = ['event', 'offer'];
 const isSelectedOption = (sortType) => (offOptions.includes(sortType) ? 'disabled' : '');
 
-export {isSelectedOption, sorts};
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+function sortByDay(pointA, pointB) {
+  return dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+}
+
+function sortByPrice(pointA, pointB) {
+  return pointB.basePrice - pointA.basePrice;
+}
+
+export {isSelectedOption, sorts, updateItem, sortByDay, sortByPrice};
